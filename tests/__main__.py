@@ -15,13 +15,18 @@ try:
     import test_floors
     import test_floorplan
 except Exception:
-    import traceback; traceback.print_exc()
-    sys.exit(0)
+    # XXX Error importing test modules.
+    # Print Traceback and close blender process
+    import traceback
+
+    traceback.print_exc()
+    sys.exit()
+
 
 def main():
     # Load the addon module
     tools.LoadModule(os.path.join(addon_dir, "btools", "__init__.py"))
-    print('-'*70, end="\n\n")
+    print('-' * 70, end="\n\n")
 
     # initialize the test suite
     loader = unittest.TestLoader()
@@ -35,7 +40,10 @@ def main():
     # initialize a runner, pass it your suite and run it
     runner = unittest.TextTestRunner(verbosity=3)
     runner.run(suite)
-    sys.exit(0)
+
+    # close blender process
+    sys.exit()
 
 
-main()
+if __name__ == '__main__':
+    main()

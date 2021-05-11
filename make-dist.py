@@ -21,19 +21,20 @@ import zipfile
 
 REPO_FILES = (
     "btools/",
+    "__init__.py",
     "LICENSE",
     "README.md",
     "CHANGELOG.md"
 )
 
 
-def git(*args) :
+def git(*args):
     # convenience routine for simplifying git command calls.
     return subprocess.check_output(("git",) + args)
 
 
 opts, args = getopt.getopt(sys.argv[1:], "", [])
-if len(args) != 1 :
+if len(args) != 1:
     raise getopt.GetoptError("expecting exactly one arg, the tag to build a release for")
 
 upto = args[0]
@@ -43,28 +44,30 @@ basename = "building_tools"
 outfilename = "%s-%s.zip" % (basename, upto)
 out = zipfile.ZipFile(outfilename, "x")
 for item in REPO_FILES:
-    if item.endswith("/") :
-        items = sorted(set(
+    if item.endswith("/"):
+        items = sorted(
+            set(
                 line.rsplit("\t", 1)[1]
                 for line in git("log", "--raw", item).decode().split("\n")
                 if line.startswith(":")
-              ))
-    else :
+            )
+        )
+    else:
         items = (item,)
 
-    for filename in items :
+    for filename in items:
         info = git("log", "--format=%ct:%H", "-n1", "%s..%s" % (earliest, upto), "--", filename).strip()
 
-        if info != b"" :
+        if info != b"":
             item = zipfile.ZipInfo()
-            item.filename = os.path.join(basename, filename.replace("btools/", ""))
+            item.filename = os.path.join(basename, filename)
             item.external_attr = 0o100644 << 16
             item.compress_type = zipfile.ZIP_DEFLATED
             timestamp, commit_hash = info.split(b":")
             timestamp = int(timestamp)
             info = git("ls-tree", commit_hash, filename).strip()
 
-        if info != b"" :
+        if info != b"":
             object_hash = info.split(b"\t")[0].split(b" ")[2].decode()
             object_contents = git("show", object_hash)
             item.date_time = time.gmtime(timestamp)[:6]

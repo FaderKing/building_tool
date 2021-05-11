@@ -7,7 +7,7 @@ from bpy.props import (
     EnumProperty,
 )
 
-from ..generic import SizeOffsetProperty
+from ..sizeoffset import SizeOffsetProperty
 from ..railing.railing_props import RailProperty
 
 
@@ -84,7 +84,6 @@ class StairsProperty(bpy.types.PropertyGroup):
             default_size=(1.0, 0.0),
             restricted=False,
         )
-        self.rail.init(self.step_width, self.step_count)
 
     def draw(self, context, layout):
         self.size_offset.draw(context, layout)
@@ -99,15 +98,15 @@ class StairsProperty(bpy.types.PropertyGroup):
         row.prop(self, "step_height")
         row.prop(self, "step_width")
 
+        row = layout.row()
+        row.prop(self, "bottom", expand=True)
+
         col = layout.column()
         col.prop(self, "landing")
         if self.landing:
             box = layout.box()
             col = box.column()
             col.prop(self, "landing_width")
-
-        col = layout.column()
-        col.prop_menu_enum(self, "bottom", text="Bottom Type")
 
         layout.prop(self, "has_railing")
         if self.has_railing:

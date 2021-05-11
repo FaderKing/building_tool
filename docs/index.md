@@ -23,12 +23,21 @@
   src="https://www.youtube.com/embed/rB1fm4I_bW4"
   frameborder="0"></iframe>
 
+## Wiki
+
+For more detailed documentation, please visit our wiki [here](https://github.com/ranjian0/building_tools/wiki).
+
 ## Authors
 
-Created by [ranjian0](https://github.com/ranjian0) and [luckykadam](https://github.com/luckykadam). Feel free to contact.
+Created by [ranjian0](https://github.com/ranjian0), [luckykadam](https://github.com/luckykadam) and [MCrafterzz](https://github.com/MCrafterzz). Feel free to contact.
 
 ## Support
 
-If you would like to support our work you can do so on our patreon page.
+If you would like to support our work you can do so through Paypal,
+
+[![](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate?hosted_button_id=EX6AB8P8M9VZG)
+
+or on our Patreon Page.
 
 [![Patreon](https://i.imgur.com/FOii5wr.png)](https://www.patreon.com/ranjian0)
+

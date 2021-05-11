@@ -2,14 +2,6 @@ import bpy
 from bpy.props import FloatProperty, EnumProperty, BoolProperty, PointerProperty
 
 
-def get_density(self):
-    return self.get("density", self.get("initial_density", 0.2))
-
-
-def set_density(self, value):
-    self["density"] = value
-
-
 class PostFillProperty(bpy.types.PropertyGroup):
     size: FloatProperty(
         name="Size",
@@ -24,14 +16,9 @@ class PostFillProperty(bpy.types.PropertyGroup):
         name="Density",
         min=0.0,
         max=1.0,
-        unit="LENGTH",
-        get=get_density,
-        set=set_density,
+        default=0.5,
         description="Number of posts along each edge",
     )
-
-    def init(self, initial_density):
-        self["initial_density"] = initial_density
 
     def draw(self, context, layout):
         row = layout.row(align=True)
@@ -53,8 +40,7 @@ class RailFillProperty(bpy.types.PropertyGroup):
         name="Rail Density",
         min=0.0,
         max=1.0,
-        default=0.3,
-        unit="LENGTH",
+        default=0.4,
         description="Number of rails over each edge",
     )
 
@@ -129,16 +115,21 @@ class RailProperty(bpy.types.PropertyGroup):
     rail_fill: PointerProperty(type=RailFillProperty)
     wall_fill: PointerProperty(type=WallFillProperty)
 
-    def init(self, stair_step_width=None, step_count=None):
-        if stair_step_width and self.fill == "POSTS":
-            if step_count > 1:
-                initial_density = (self.post_fill.size * (step_count-1)) / (stair_step_width * step_count)
-            else:
-                initial_density = (self.post_fill.size - 0.001) / (2 * stair_step_width)  # just enough to have 0 post on stairs
-            self.post_fill.init(initial_density=initial_density)
+    show_extra_props: BoolProperty()
+    bottom_rail: BoolProperty(
+        name="Add Bottom Rail",
+        default=True,
+    )
+    bottom_rail_offset: FloatProperty(
+        name="Rail Offset",
+        min=-1.0,
+        max=1.0,
+        default=0.0,
+        unit="LENGTH",
+        description="Offset of the bottom rail",
+    )
 
     def draw(self, context, layout):
-
         row = layout.row()
         row.prop(self, "offset", text="Railing Offset")
 
@@ -150,6 +141,11 @@ class RailProperty(bpy.types.PropertyGroup):
             "RAILS" : self.rail_fill,
             "WALL"  : self.wall_fill
         }.get(self.fill).draw(context, layout)
+
+        if self.fill in ["POSTS", "WALL"] and self.show_extra_props:
+            row = layout.row(align=True)
+            row.prop(self, "bottom_rail", toggle=True)
+            row.prop(self, "bottom_rail_offset")
 
         layout.label(text="Corner Posts")
         row = layout.row(align=True)

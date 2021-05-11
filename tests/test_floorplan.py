@@ -1,14 +1,13 @@
+import bpy
 import btools
 import random
 import unittest
-import bpy
 
 floorplan = btools.building.floorplan
 builder = floorplan.floorplan.Floorplan
 
 
 class TestFloorplan(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         bpy.utils.register_class(floorplan.FloorplanProperty)
@@ -21,7 +20,7 @@ class TestFloorplan(unittest.TestCase):
 
     def setUp(self):
         self.clear_objects()
-        self.defaults = btools.utils.kwargs_from_props(bpy.context.scene.test_prop)
+        self.defaults = btools.utils.dict_from_prop(bpy.context.scene.test_prop)
 
     def tearDown(self):
         # -- restore test_prop to previous state
@@ -74,7 +73,7 @@ class TestFloorplan(unittest.TestCase):
         self.assertIsNotNone(res)
 
         faces = context.object.data.polygons
-        self.assertEquals(len(faces), 1) # cap_tris False
+        self.assertEquals(len(faces), 1)  # cap_tris False
 
         # -- check default size
         verts = context.object.data.vertices
@@ -86,12 +85,11 @@ class TestFloorplan(unittest.TestCase):
 
         self.clear_objects()
 
-        prop.cap_tris = True
         res = builder.build(context, prop)
         self.assertIsNotNone(res)
 
         faces = context.object.data.polygons
-        self.assertEquals(len(faces), prop.segments) # cap_tris False
+        self.assertEquals(len(faces), 1)
 
     def test_composite(self):
         context = bpy.context
@@ -169,5 +167,5 @@ class TestFloorplan(unittest.TestCase):
             self.assertIsNotNone(res)
 
             faces = context.object.data.polygons
-            self.assertEquals(len(faces), i+1)
+            self.assertEquals(len(faces), i + 1)
             self.clear_objects()
